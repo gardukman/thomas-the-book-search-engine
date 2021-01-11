@@ -1,3 +1,5 @@
+// auth.js from the module lessons
+
 const jwt = require('jsonwebtoken');
 
 const secret = 'mysecretsshhhhh';
