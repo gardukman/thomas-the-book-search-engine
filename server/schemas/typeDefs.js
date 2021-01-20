@@ -18,16 +18,19 @@ const typeDefs = gql`
         image: String
         link: String
     }
+
     # Create what kind of Query we want
     type Query {
         me: User
         users: [User]
     }
+
     # For authenticating the user
     type Auth {
         token: ID!
         user: User
     }
+
     # Book input used to pass params to the savebook mutation
     input BookInput {
         bookId: String
@@ -37,6 +40,7 @@ const typeDefs = gql`
         image: String
         link: String
     }
+    
     # Define the mutations
     type Mutation {
         login(email: String!, password: String!): Auth

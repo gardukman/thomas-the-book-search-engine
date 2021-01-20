@@ -9,6 +9,7 @@ const resolvers = {
             return User.find()
                 .select('-__v')
         },
+
         me: async (parent, args, context) => {
             if (context.user) {
                 const userData = await User.findOne({ _id: context.user._id })
@@ -17,7 +18,6 @@ const resolvers = {
 
                 return userData;
             }
-
             throw new AuthenticationError('Not logged in')
         }
     },
@@ -30,9 +30,9 @@ const resolvers = {
                 throw new AuthenticationError('Incorrect credentials');
             }
 
-            const correctPw = await user.isCorrectPassword(password);
+            const correctPassword = await user.isCorrectPassword(password);
 
-            if (!correctPw) {
+            if (!correctPassword) {
                 throw new AuthenticationError('Incorrect credentials');
             }
 
