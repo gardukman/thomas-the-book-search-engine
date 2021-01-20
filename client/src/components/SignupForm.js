@@ -1,34 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import { ADD_USER } from '../utils/mutations';
 import { Form, Button, Alert } from 'react-bootstrap';
-import { useMutation } from '@apollo/react-hooks'
-import { ADD_USER } from './../utils/mutations';
+
+//import { createUser } from '../utils/API';
 import Auth from '../utils/auth';
 
 const SignupForm = () => {
-  const [createUser, {err}] = useMutation(ADD_USER);
-
-  useEffect(() => {
-    if(err){
-      setShowAlert(true)
-    } else {
-      setShowAlert(false)
-    }
-  },[err])
-  
-  // set the initial form state
+  // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
-  // set the state for the form validation
+  // set state for form validation
   const [validated] = useState(false);
-  // set the state for alert
+  // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
-  const inputChange = (event) => {
+  const [addUser] = useMutation(ADD_USER);
+
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
     setUserFormData({ ...userFormData, [name]: value });
   };
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
+
     // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -37,15 +32,13 @@ const SignupForm = () => {
     }
 
     try {
-      const response = await createUser({variables:{...userFormData}});
-
-      if (!response.ok) {
+      const { data } = await addUser({
+        variables: { ...userFormData }
+      });
+      if (!data) {
         throw new Error('something went wrong!');
       }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
+      Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
       setShowAlert(true);
@@ -73,7 +66,7 @@ const SignupForm = () => {
             type='text'
             placeholder='Your username'
             name='username'
-            onChange={inputChange}
+            onChange={handleInputChange}
             value={userFormData.username}
             required
           />
@@ -86,7 +79,7 @@ const SignupForm = () => {
             type='email'
             placeholder='Your email address'
             name='email'
-            onChange={inputChange}
+            onChange={handleInputChange}
             value={userFormData.email}
             required
           />
@@ -99,7 +92,7 @@ const SignupForm = () => {
             type='password'
             placeholder='Your password'
             name='password'
-            onChange={inputChange}
+            onChange={handleInputChange}
             value={userFormData.password}
             required
           />

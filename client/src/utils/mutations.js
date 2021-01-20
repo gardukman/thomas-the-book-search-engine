@@ -1,44 +1,63 @@
 import gql from 'graphql-tag';
 
-// mutation for ADD_USER
+//Mutation logic for loging in the user
+export const LOGIN_USER = gql`
+    mutation login($email: String!, $password: String!){
+        login(email: $email, password: $password){
+            token
+            user{
+                _id
+                username
+            }
+        }
+    }
+`;
+// mutation defenition for adding a user
 export const ADD_USER = gql`
-    mutation createUser($username: String!, $email: String!, $password: String!) {
-        createUser(username: $username, email: $email, password: $password){
+    mutation addUser($email: String!, $password: String!, $username: String!){
+        addUser(email: $email, password: $password, username: $username){
             token
-            user {
-                _id
-                username
-            }
-        }
-    }
-`;
-
-// mutation for LOGIN_USER
-export const LOGIN_USER = gql `
-    mutation loginUser($email: String!, $password: String!){
-        loginUser(email: $email, password: $password) {
-            token
-            user {
-                _id
-                username
-            }
-        }
-    }
-`;
-
-// mutation for SAVE_BOOK
-export const SAVE_BOOK = gql `
-    mutation saveBook($input: BookInput) {
-        saveBook(input: $input) {
-            user {
-                _id
+            user{
                 username
                 email
-                bookCount
-                savedBooks {
-                    bookId
-                    title
-                }
+            }
+        }
+    }
+`;
+//mutation def for saving a book
+export const SAVE_BOOK = gql`
+    mutation saveBook($book: BookInput!) {
+    saveBook(book: $book) {
+      _id
+      username
+      email
+      bookCount
+      savedBooks {
+        bookId
+        title
+        authors
+        description
+        image
+        link
+      }
+    }
+  }
+`;
+//mutation for removing a book
+export const REMOVE_BOOK = gql`
+    mutation removeBook($bookId: String!) {
+        removeBook(bookId: $bookId) {
+            _id
+            username
+            email
+            bookCount
+            savedBooks {
+                bookId
+                title
+                authors
+                description
+                image
+                link
             }
         }
     }
